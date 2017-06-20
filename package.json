@@ -1,0 +1,27 @@
+{
+  "name": "expresstestskeleton",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node --inspect=5858 ./bin/www ",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "express-ws": "^3.0.0",
+    "mongoose": "^4.10.7",
+    "morgan": "~1.8.1",
+    "nconf": "^0.8.4",
+    "pug": "~2.0.0-beta11",
+    "serve-favicon": "~2.4.2",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "crypto": "0.0.3",
+    "faker": "^4.1.0",
+    "nodemon": "^1.11.0"
+  }
+}
