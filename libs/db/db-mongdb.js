@@ -17,6 +17,7 @@ db.on('error', function (err) {
 
 db.once('open', function callback () {
     log.info("Connected to DB!");
+    mongoose.Promise = global.Promise;
 });
 
 module.exports = mongoose;
