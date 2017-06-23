@@ -76,7 +76,7 @@ passport.use(new BearerStrategy(
                 return done(null, false, { message: 'Token expired' });
             }
 
-            User.findById(token.userId, function(err, user) {
+            User.findOne({userID: token.userId}, function(err, user) {
             
                 if (err) { 
                 	return done(err); 

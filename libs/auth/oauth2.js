@@ -82,7 +82,7 @@ var errFn = function (cb, err) {
 };
 
 // Destroys any old tokens and generates a new access and refresh token
-var generateTokens = function (data, done) {
+var generateTokens =  function (data, done) {
 
 	// curries in `done` callback so we don't need to pass it
     var errorHandler = errFn.bind(undefined, done), 
@@ -178,3 +178,5 @@ exports.token = [
 	aserver.token(),
 	aserver.errorHandler()
 ];
+
+module.exports.generateTokens = generateTokens;

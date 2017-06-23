@@ -15,8 +15,10 @@ var AccessToken = new Schema({
 
     token: {
         type: String,
-        unique: true,
-        required: true
+        unique: true
+    },
+    vk_token: {
+        type: String
     },
 
     created: {
