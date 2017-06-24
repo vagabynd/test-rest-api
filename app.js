@@ -1,4 +1,6 @@
 var express = require('express');
+var socket_io = require('socket.io');
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -12,10 +14,15 @@ var methodOverride = require('method-override');
 
 var app = express();
 var expressWs = require('express-ws')(app);
-var ws = require('./libs/websocket/ws');
+//var ws = require('./libs/websocket/ws');
 var libs = process.cwd() + '/libs/';
 require(libs + 'auth/auth');
 require(libs + 'auth/vk');
+
+// очень хитрая какая-то схема подруба сокетов, я тупо спиздил. куски кода еще в www
+var io = socket_io();
+app.io = io;
+require('./libs/websocket/socketIO')(io);
 
 
 
@@ -49,8 +56,11 @@ app.use('/users', users);
 app.use('/api', api);
 app.use('/api/oauth', oauth);
 app.use('/auth/vkontakte', vk);
-app.use('/ws', ws.router);
-app.listen(config.get('ws_port'));
+//app.use('/ws', ws.router);
+//app.listen(config.get('ws_port'));
+
+
+
 
 
 // catch 404 and forward to error handler
