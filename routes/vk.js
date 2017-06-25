@@ -22,14 +22,14 @@ router.get('/callback',
 router.get('/check',
     ensureAuthenticated,
     function(req, res, next) {
-        res.redirect('/');
+        res.send('Authenticated');
         return next();
 });
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
     else {
-        res.redirect('/');
+        res.send('Not Authenticated');
     }
 }
 module.exports = router;
