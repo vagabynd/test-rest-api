@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
 
-    curLoc = new Schema({
+    CurLoc = new Schema({
         userID: {
             type: String,
             unique: true,
@@ -19,4 +19,4 @@ var mongoose = require('mongoose'),
         }
     });
 
-module.exports = mongoose.model('CurLoc', curLoc);
+exports.CurLoc = mongoose.model('CurLoc', CurLoc);

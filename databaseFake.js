@@ -1,17 +1,71 @@
-
-var db = require('./libs/db/db-mongdb');
+var mongoose = require('./libs/db/mongoose');
+var async = require('async');
 var faker = require('faker/locale/ru');
 var crypto = require('crypto');
 
 
 var dataModels = process.cwd() + '/dataModels/';
-var User = require(dataModels + 'user');
-var curLoc = require(dataModels + 'curLoc');
-var Client = require(dataModels + 'client');
-var AccessToken = require(dataModels +'accessToken');
-var RefreshToken = require(dataModels +'refreshToken');
+//var User = require(dataModels + 'user').User;
+//var CurLoc = require(dataModels + 'curLoc');
+//var Client = require(dataModels + 'client');
+//var AccessToken = require(dataModels +'accessToken');
+//var RefreshToken = require(dataModels +'refreshToken');
 
+async.series([
+    open,
+    dropDatabase,
+    requireModels,
+    createUsers,
+    createCurrentLocation
+], function(err) {
+    console.log(arguments);
+    mongoose.disconnect();
+    process.exit(err ? 255 : 0);
+});
 
+var numberOfUsers = 20;
+
+function open(callback) {
+    mongoose.connection.on('open', callback);
+}
+function dropDatabase(callback) {
+    var db = mongoose.connection.db;
+    db.dropDatabase(callback);
+}
+function requireModels(callback) {
+    require(dataModels + 'user');
+    require(dataModels + 'curLoc');
+    async.each(Object.keys(mongoose.models), function(modelName, callback) {
+        mongoose.models[modelName].ensureIndexes(callback);
+    }, callback);
+}
+function createUsers(callback) {
+    var users = [];
+    for (var i = 0; i<numberOfUsers; i++){
+        users[i] = GenerateUser();
+    }
+    async.each(users, function(userData, callback) {
+        var user = new mongoose.models.User(userData);
+        user.save(callback);
+    }, callback(users));
+}
+function createCurrentLocation(callback) {
+    var curLocs = [];
+    curLocs = GenerateCurrentLocation(createUsers(function (data) {
+        
+    }));
+    async.each(curLocs, function (userLoc, callback) {
+        var curLoc = new mongoose.models.CurLoc(userLoc);
+        curLoc.save(callback);
+    }, callback);
+}
+//function crearteCurrentLocation(callback) {
+//    var CurLock = [];
+//    for (var i = 0; i < numberOfUsers; i++){
+//        CurLock[i] = GenerateCurrentLocation(User);
+
+//    }
+//}
 var GenerateUser = function () {
     var hp = CreateHashedPswd(faker.internet.password());
 
@@ -33,7 +87,7 @@ var GenerateCurrentLocation = function (users) {
     for (var i in users) {
         if (users.hasOwnProperty(i)) {
             curLoc.push({
-                "user": users[i].user,
+                "user": users[i].userID,
                 "current_position": {
                     "x": faker.address.latitude(),
                     "y": faker.address.longitude()
@@ -137,19 +191,44 @@ var Encrypt = function (password, salt) {
 };
 
 
-var users = [];
-var numberOfUsers = 100;
-User.remove({});
+//User.remove({},function (err, result) {
+//    if(err) return /*console.log(err)*/;
+   // console.log(result);
+//});
 
-for (var i = 0; i < numberOfUsers; i++){
-    var _user = new User (GenerateUser());
-    _user.save();
+//for (var i = 0; i < numberOfUsers; i++){
+//    var _user = new User (GenerateUser());
+//    _user.save();
     //users.push(_user);
-}
+//}
 
-var curLoc = GenerateCurrentLocation(users);
-var curReq = GenerateRequests(users);
-var dialogs = GenerateDialogs(curReq, users);
+//CurLoc.remove({}, function (err, result) {
+//    if(err) return /*console.log(err)*/;
+    //console.log(result);
+//});
 
 
+//var CurLocation = [];
+//User.find({}, function (err, docs) {
+//    if(err) return console.log(err);
+//    console.log(docs);
+//});
+ //CurLocation =  GenerateCurrentLocation(Users);
+//for (var j = 0; j < numberOfUsers; j++){
+ //   var _curLoc = new CurLoc (CurLocation[j]);
+  //  _curLoc.save();
+
+//}
+//var curLoc = [];
+//curloc.remove({});
+//for (var i = 0; i < numberofUsers; i++){
+//    var _curLoc = new CurLoc (GenerateCurrentLocation(_user));
+//    _curLoc.save();
+//}
+
+
+//var curReq = GenerateRequests(users);
+//var dialogs = GenerateDialogs(curReq, users);
+
+//db.disconnect();
 console.log('finished');

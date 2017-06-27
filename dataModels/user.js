@@ -1,5 +1,6 @@
-var mongoose = require('mongoose'),
+var mongoose = require('../libs/db/mongoose'),
     crypto = require('crypto'),
+
 
     Schema = mongoose.Schema,
 
@@ -7,7 +8,7 @@ var mongoose = require('mongoose'),
         userID: {
             type: String,
             unique: true,
-            required: true
+            required:  true
         },
         firstName: {
             type: String,
@@ -64,4 +65,4 @@ User.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;
 };
 
-module.exports = mongoose.model('User', User);
+ exports.User = mongoose.model('User', User);
