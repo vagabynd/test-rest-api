@@ -5,22 +5,23 @@ var crypto = require('crypto');
 
 
 var dataModels = process.cwd() + '/dataModels/';
-//var User = require(dataModels + 'user').User;
-//var CurLoc = require(dataModels + 'curLoc');
-//var Client = require(dataModels + 'client');
-//var AccessToken = require(dataModels +'accessToken');
-//var RefreshToken = require(dataModels +'refreshToken');
+
+mongoose.Promise = global.Promise;
+
+var users = [];
+var requests = [];
 
 async.series([
     open,
     dropDatabase,
     requireModels,
     createUsers,
-    createCurrentLocation
-], function(err) {
-    console.log(arguments);
+    createCurrentLocation,
+    createRequests,
+    createDialogs
+], function (arg) {
+    //console.log(arguments);
     mongoose.disconnect();
-    process.exit(err ? 255 : 0);
 });
 
 var numberOfUsers = 20;
@@ -35,37 +36,48 @@ function dropDatabase(callback) {
 function requireModels(callback) {
     require(dataModels + 'user');
     require(dataModels + 'curLoc');
-    async.each(Object.keys(mongoose.models), function(modelName, callback) {
+    require(dataModels + 'curReq');
+    require(dataModels + 'curDlg');
+    async.each(Object.keys(mongoose.models), function (modelName, callback) {
         mongoose.models[modelName].ensureIndexes(callback);
     }, callback);
 }
 function createUsers(callback) {
-    var users = [];
-    for (var i = 0; i<numberOfUsers; i++){
+    for (var i = 0; i < numberOfUsers; i++) {
         users[i] = GenerateUser();
     }
-    async.each(users, function(userData, callback) {
+    async.each(users, function (userData, callback) {
         var user = new mongoose.models.User(userData);
         user.save(callback);
-    }, callback(users));
-}
-function createCurrentLocation(callback) {
-    var curLocs = [];
-    curLocs = GenerateCurrentLocation(createUsers(function (data) {
-        
-    }));
-    async.each(curLocs, function (userLoc, callback) {
-        var curLoc = new mongoose.models.CurLoc(userLoc);
-        curLoc.save(callback);
     }, callback);
 }
-//function crearteCurrentLocation(callback) {
-//    var CurLock = [];
-//    for (var i = 0; i < numberOfUsers; i++){
-//        CurLock[i] = GenerateCurrentLocation(User);
 
-//    }
-//}
+function createCurrentLocation(callback) {
+    var curLocs = GenerateCurrentLocation(users);
+     async.each(curLocs, function (curLocData, callback) {
+         var curLoc = new mongoose.models.CurLoc(curLocData);
+         curLoc.save(callback);
+     },callback);
+}
+
+function createRequests(callback) {
+    requests = GenerateRequests(users);
+    console.log(requests);
+    async.each(requests, function (requestData, callback) {
+        var request = new mongoose.models.CurReq(requestData);
+        request.save(callback);
+    },callback);
+}
+
+function createDialogs(callback) {
+    var dialogs = GenerateDialogs(requests,users);
+    console.log(dialogs);
+    async.each(dialogs, function (dialogData, callback) {
+        var dialog = new mongoose.models.CurReq(dialogData);
+        dialog.save(callback);
+    },callback);
+}
+
 var GenerateUser = function () {
     var hp = CreateHashedPswd(faker.internet.password());
 
@@ -87,7 +99,7 @@ var GenerateCurrentLocation = function (users) {
     for (var i in users) {
         if (users.hasOwnProperty(i)) {
             curLoc.push({
-                "user": users[i].userID,
+                "userID": users[i].userID,
                 "current_position": {
                     "x": faker.address.latitude(),
                     "y": faker.address.longitude()
@@ -113,11 +125,11 @@ var GenerateRequests = function (users) {
                 for (var u = 0; u < it; u++) {
                     requestUser.messages.push(
                         {
-                            "requestId": faker.random.number(),
                             "position": {
                                 "x": faker.address.latitude(),
                                 "y": faker.address.longitude()
                             },
+                            "requestId": faker.random.number(),
                             "time": faker.date.recent(),
                             "message": faker.lorem.sentence(),
                             "place": faker.address.streetName(),
@@ -189,46 +201,3 @@ var CreateHashedPswd = function (password) {
 var Encrypt = function (password, salt) {
     return crypto.createHmac('sha1', salt).update(password).digest('hex')
 };
-
-
-//User.remove({},function (err, result) {
-//    if(err) return /*console.log(err)*/;
-   // console.log(result);
-//});
-
-//for (var i = 0; i < numberOfUsers; i++){
-//    var _user = new User (GenerateUser());
-//    _user.save();
-    //users.push(_user);
-//}
-
-//CurLoc.remove({}, function (err, result) {
-//    if(err) return /*console.log(err)*/;
-    //console.log(result);
-//});
-
-
-//var CurLocation = [];
-//User.find({}, function (err, docs) {
-//    if(err) return console.log(err);
-//    console.log(docs);
-//});
- //CurLocation =  GenerateCurrentLocation(Users);
-//for (var j = 0; j < numberOfUsers; j++){
- //   var _curLoc = new CurLoc (CurLocation[j]);
-  //  _curLoc.save();
-
-//}
-//var curLoc = [];
-//curloc.remove({});
-//for (var i = 0; i < numberofUsers; i++){
-//    var _curLoc = new CurLoc (GenerateCurrentLocation(_user));
-//    _curLoc.save();
-//}
-
-
-//var curReq = GenerateRequests(users);
-//var dialogs = GenerateDialogs(curReq, users);
-
-//db.disconnect();
-console.log('finished');

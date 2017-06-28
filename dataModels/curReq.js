@@ -1,22 +1,20 @@
-var mongoose = require('mongoose'),
+var mongoose = require('../libs/db/mongoose'),
     Schema = mongoose.Schema,
 
-    curReq = new Schema({
+    CurReq = new Schema({
         userID: {
             type: String,
             unique: true,
             required: true
         },
-        requests: [{
+        messages: [{
             position: {
-                fields: {
                     x: {
                         type: String
                     },
                     y: {
                         type: String
                     }
-                }
             },
             requestId: {type: String},
             time: {type: Date},
@@ -26,5 +24,4 @@ var mongoose = require('mongoose'),
             answered: {type: Boolean}
         }]
     });
-
-module.exports = mongoose.model('CurReq', curReq);
+exports.CurReq = mongoose.model('CurReq', CurReq);

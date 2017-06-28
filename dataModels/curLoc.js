@@ -1,4 +1,4 @@
-var mongoose = require('mongoose'),
+var mongoose = require('../libs/db/mongoose'),
     Schema = mongoose.Schema,
 
     CurLoc = new Schema({
@@ -7,15 +7,14 @@ var mongoose = require('mongoose'),
             unique: true,
             required: true
         },
-        curPos:{
-            fields:{
+        current_position:{
+
                 x:{
                     type: String
                 },
                 y:{
                     type: String
                 }
-            }
         }
     });
 
