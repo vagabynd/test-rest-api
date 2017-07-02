@@ -23,7 +23,7 @@ var errFn = function (cb, err) {
 passport.use(new VKontakteStrategy(
     {
         clientID:     6084066, // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
-        clientSecret: 'RnZI4W5kcn8oXDV51Jgo',
+        clientSecret: config.get('vk_secret'),
         callbackURL:  'http://localhost:3000/auth/vkontakte/callback'
     },
     function myVerifyCallbackFn(accessToken, _refreshToken, params, profile, done) {

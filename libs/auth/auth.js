@@ -32,7 +32,6 @@ passport.use(new BasicStrategy(
         });
     }
 ));
-
 passport.use(new ClientPasswordStrategy(
     function(clientId, clientSecret, done) {
         Client.findOne({ clientId: clientId }, function(err, client) {

@@ -28,6 +28,7 @@ require('./libs/websocket/socketIO')(io);
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var messages = require('./routes/messages');
 var api = require('./routes/api');
 var log = require('./libs/log/log')(module);
 var db = require('./libs/db/db-mongdb');
@@ -53,6 +54,7 @@ app.use(passport.session());
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/messages', messages);
 app.use('/api', api);
 app.use('/api/oauth', oauth);
 app.use('/auth/vkontakte', vk);
