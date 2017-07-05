@@ -20,11 +20,10 @@ async.series([
     createRequests,
     createDialogs
 ], function (arg) {
-    //console.log(arguments);
     mongoose.disconnect();
 });
 
-var numberOfUsers = 20;
+var numberOfUsers = 7;
 
 function open(callback) {
     mongoose.connection.on('open', callback);
@@ -51,31 +50,26 @@ function createUsers(callback) {
         user.save(callback);
     }, callback);
 }
-
 function createCurrentLocation(callback) {
     var curLocs = GenerateCurrentLocation(users);
-     async.each(curLocs, function (curLocData, callback) {
-         var curLoc = new mongoose.models.CurLoc(curLocData);
-         curLoc.save(callback);
-     },callback);
+    async.each(curLocs, function (curLocData, callback) {
+        var curLoc = new mongoose.models.CurLoc(curLocData);
+        curLoc.save(callback);
+    }, callback);
 }
-
 function createRequests(callback) {
     requests = GenerateRequests(users);
-    console.log(requests);
     async.each(requests, function (requestData, callback) {
         var request = new mongoose.models.CurReq(requestData);
         request.save(callback);
-    },callback);
+    }, callback);
 }
-
 function createDialogs(callback) {
-    var dialogs = GenerateDialogs(requests,users);
-    console.log(dialogs);
+    var dialogs = GenerateDialogs(requests, users);
     async.each(dialogs, function (dialogData, callback) {
-        var dialog = new mongoose.models.CurReq(dialogData);
+        var dialog = new mongoose.models.CurDlg(dialogData);
         dialog.save(callback);
-    },callback);
+    }, callback);
 }
 
 var GenerateUser = function () {
@@ -141,7 +135,6 @@ var GenerateRequests = function (users) {
             }
         }
     }
-
     return curReq;
 };
 
@@ -151,8 +144,8 @@ var GenerateDialogs = function (requests, users) {
 
     for (var i in requests) {
         if (requests.hasOwnProperty(i)) {
-            var sentTo = users[faker.random.number(users.length - 1)].user;
-            var reqestSender = requests[i].user;
+            var sentTo = users[faker.random.number(users.length - 1)].userID;
+            var reqestSender = requests[i].userID;
             var messages = {};
             var dialog = {};
 
@@ -180,6 +173,7 @@ var GenerateDialogs = function (requests, users) {
                 }
                 dialog['requestId'] = requests[i].messages[u].requestId;
                 dialog['messages'] = messages;
+
                 dialogs.push(dialog);
             }
         }
