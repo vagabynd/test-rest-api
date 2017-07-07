@@ -1,22 +1,21 @@
-var mongoose = require('mongoose'),
+var mongoose = require('../libs/db/mongoose'),
     Schema = mongoose.Schema,
 
-    curLoc = new Schema({
+    CurLoc = new Schema({
         userID: {
             type: String,
             unique: true,
             required: true
         },
-        curPos:{
-            fields:{
+        current_position:{
+
                 x:{
                     type: String
                 },
                 y:{
                     type: String
                 }
-            }
         }
     });
 
-module.exports = mongoose.model('CurLoc', curLoc);
+exports.CurLoc = mongoose.model('CurLoc', CurLoc);
