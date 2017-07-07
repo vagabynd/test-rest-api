@@ -41,7 +41,7 @@ Client.remove({}, function(err) {
     clients.push(new Client({
         name: 'VK API',
         clientId: 6084066,
-        clientSecret: "RnZI4W5kcn8oXDV51Jgo"
+        clientSecret: "secret_vk"
     }));
 
     for (var i in clients){
@@ -52,7 +52,6 @@ Client.remove({}, function(err) {
                 } else {
                     return log.error(err);
                 }
-
             });
 		}
 	}

@@ -5,7 +5,7 @@ var passport = require('passport');
 var ws = require('../libs/websocket/ws');
 
 
-/* GET users listing. */
+/* old websocket example  */
 /*router.get('/:name', function(req, res, next) {
   ws.connections[0].send(req.params['name']);
   res.send('hi, ' + req.params['name']  +  ' i\'m api');
