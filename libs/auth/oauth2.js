@@ -8,7 +8,7 @@ var config = require(libs + 'config');
 var log = require(libs + 'log/log')(module);
 var dataModels = process.cwd() + '/dataModels/';
 
-var db = require(libs + 'db/db-mongdb');
+var db = require(libs + 'db/mongoose');
 var User = require(dataModels + 'user');
 var Client = require(dataModels + 'client');
 var AccessToken = require(dataModels +'accessToken');
