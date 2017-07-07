@@ -7,7 +7,7 @@ var config = require(libs + 'config');
 var log = require(libs + 'log/log')(module);
 
 var dataModels = process.cwd() + '/dataModels/';
-var User = require(dataModels + 'user');
+var User = require(dataModels + 'user').User;
 
 var AccessToken = require(dataModels +'accessToken');
 var RefreshToken = require(dataModels +'refreshToken');

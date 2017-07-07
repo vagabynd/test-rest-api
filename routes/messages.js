@@ -3,6 +3,7 @@ var router = express.Router();
 
 var dataModels = process.cwd() + '/dataModels/';
 var curDlg = require(dataModels + 'curDlg');
+var event = require('../libs/event');
 
 
 router.get('/get/:dialog/:lastMsgId', function (req, res, next) {
@@ -32,6 +33,7 @@ router.delete('/deleteDlg/:id', function (req, res, next) {
 
 router.post('/send/', function (req, res, next) {
     res.send("i'm sending message: " + req.body);
+    event.emit('newMessage_' + req.body.to, 'hey');
 });
 
 router.post('/rate/:answerId', function (req, res, next) {

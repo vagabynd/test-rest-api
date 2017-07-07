@@ -29,9 +29,10 @@ require('./libs/websocket/socketIO')(io);
 var index = require('./routes/index');
 var users = require('./routes/users');
 var messages = require('./routes/messages');
+var position = require('./routes/position');
 var api = require('./routes/api');
 var log = require('./libs/log/log')(module);
-var db = require('./libs/db/db-mongdb');
+var db = require('./libs/db/mongoose');
 var oauth2 = require('./libs/auth/oauth2');
 var oauth = require('./routes/oauth');
 var vk = require('./routes/vk');
@@ -55,14 +56,12 @@ app.use(passport.session());
 app.use('/', index);
 app.use('/users', users);
 app.use('/messages', messages);
+app.use('/position', position);
 app.use('/api', api);
 app.use('/api/oauth', oauth);
 app.use('/auth/vkontakte', vk);
-//app.use('/ws', ws.router);
-//app.listen(config.get('ws_port'));
 
-
-
+require('./databaseFake');
 
 
 // catch 404 and forward to error handler

@@ -18,4 +18,4 @@ var mongoose = require('mongoose'),
 		}
 	});
 
-module.exports = mongoose.model('Client', Client);
+exports.Client = mongoose.model('Client', Client);

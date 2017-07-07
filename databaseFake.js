@@ -3,6 +3,10 @@ var async = require('async');
 var faker = require('faker/locale/ru');
 var crypto = require('crypto');
 
+var libs = process.cwd() + '/libs/';
+var config = require(libs + 'config');
+
+var log = require(libs + 'log/log')(module);
 
 var dataModels = process.cwd() + '/dataModels/';
 
@@ -16,11 +20,13 @@ async.series([
     dropDatabase,
     requireModels,
     createUsers,
+    createClients,
     createCurrentLocation,
     createRequests,
     createDialogs
 ], function (arg) {
-    mongoose.disconnect();
+    log.info('DB recreated successfully!');
+    //mongoose.disconnect();
 });
 
 var numberOfUsers = 7;
@@ -32,24 +38,56 @@ function dropDatabase(callback) {
     var db = mongoose.connection.db;
     db.dropDatabase(callback);
 }
+
 function requireModels(callback) {
     require(dataModels + 'user');
     require(dataModels + 'curLoc');
     require(dataModels + 'curReq');
     require(dataModels + 'curDlg');
+    require(dataModels + 'client');
     async.each(Object.keys(mongoose.models), function (modelName, callback) {
         mongoose.models[modelName].ensureIndexes(callback);
     }, callback);
 }
+
 function createUsers(callback) {
     for (var i = 0; i < numberOfUsers; i++) {
         users[i] = GenerateUser();
     }
+
+    users.push({
+        userID: config.get("default:user:username"),
+        password: config.get("default:user:password")
+    });
+
     async.each(users, function (userData, callback) {
         var user = new mongoose.models.User(userData);
         user.save(callback);
     }, callback);
 }
+
+function createClients(callback) {
+    var clients = [];
+
+    clients.push({
+        name: config.get("default:client:name"),
+        clientId: config.get("default:client:clientId"),
+        clientSecret: config.get("default:client:clientSecret")
+    });
+
+    clients.push({
+        name: 'VK API',
+        clientId: 6084066,
+        clientSecret: "secret_vk"
+    });
+
+    async.each(clients, function (clientData, callback) {
+        var client = new mongoose.models.Client(clientData);
+        client.save(callback);
+    }, callback);
+}
+
+
 function createCurrentLocation(callback) {
     var curLocs = GenerateCurrentLocation(users);
     async.each(curLocs, function (curLocData, callback) {
@@ -57,6 +95,7 @@ function createCurrentLocation(callback) {
         curLoc.save(callback);
     }, callback);
 }
+
 function createRequests(callback) {
     requests = GenerateRequests(users);
     async.each(requests, function (requestData, callback) {
@@ -64,6 +103,7 @@ function createRequests(callback) {
         request.save(callback);
     }, callback);
 }
+
 function createDialogs(callback) {
     var dialogs = GenerateDialogs(requests, users);
     async.each(dialogs, function (dialogData, callback) {
@@ -71,6 +111,9 @@ function createDialogs(callback) {
         dialog.save(callback);
     }, callback);
 }
+
+
+
 
 var GenerateUser = function () {
     var hp = CreateHashedPswd(faker.internet.password());

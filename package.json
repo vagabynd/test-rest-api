@@ -15,7 +15,11 @@
     "express-session": "^1.15.3",
     "express-ws": "^3.0.0",
     "faker": "^4.1.0",
+<<<<<<< HEAD
     "method-override": "^2.3.9",
+=======
+    "method-override": "latest",
+>>>>>>> MoreBlood/master
     "mongoose": "^4.10.7",
     "morgan": "~1.8.1",
     "nconf": "^0.8.4",
@@ -26,6 +30,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-oauth2-client-password": "^0.1.2",
     "passport-vkontakte": "^0.3.2",
+    "prompt": "^1.0.0",
     "pug": "~2.0.0-beta11",
     "serve-favicon": "~2.4.2",
     "socket.io": "^2.0.3",

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var dataModels = process.cwd() + '/dataModels/';
-var User = require(dataModels + 'user');
+var User = require(dataModels + 'user').User;
 
 /* GET users listing. */
 router.get('/:userid', function(req, res, next) {User.findOne({userID: req.param('userid')}, function(err, user) {

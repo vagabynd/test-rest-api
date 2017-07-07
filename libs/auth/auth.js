@@ -9,7 +9,7 @@ var dataModels = process.cwd() + '/dataModels/';
 var config = require(libs + 'config');
 
 var User = require(dataModels + 'user');
-var Client = require(dataModels +'client');
+var Client = require(dataModels +'client').Client;
 var AccessToken = require(dataModels +'accessToken');
 var RefreshToken = require(dataModels +'refreshToken');
 
